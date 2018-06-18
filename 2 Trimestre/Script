@@ -1,0 +1,73 @@
+﻿CREATE TABLE publicacao (
+idlivr INTEGER NOT NULL,
+idaut INTEGER NOT NULL,
+PRIMARY KEY (idlivr, idaut),
+FOREIGN KEY (idlivr) REFERENCES livro (idlivr),
+FOREIGN KEY (idaut) REFERENCES autor (idaut)
+);
+
+
+CREATE TABLE estado (
+idest INT NOT NULL PRIMARY KEY,
+nome VARCHAR(50) NOT NULL,
+sigla CHAR(2) NOT NULL);
+
+INSERT INTO estado (idest, nome, sigla) VALUES
+(1, 'Paraná', 'PR'),
+(2, 'São Paulo', 'SP'),
+(3, 'Acre', 'AC');
+
+
+CREATE TABLE cidade (
+idcid SERIAL NOT NULL PRIMARY KEY,
+nome VARCHAR(80) NOT NULL,
+idest INT NOT NULL REFERENCES estado (idest)
+);
+
+INSERT INTO cidade (nome, idest) VALUES
+('Paranavaí', 1),
+('Santos', 2),
+('Rio Branco', 3);
+
+CREATE TABLE autor (
+idaut SERIAL NOT NULL PRIMARY KEY,
+nome VARCHAR(100) NOT NULL,
+rua VARCHAR(100) NOT NULL,
+numero VARCHAR(6) NOT NULL,
+bairro VARCHAR(50) NOT NULL,
+cep CHAR(8) NOT NULL,
+email VARCHAR(200) NOT NULL,
+fone VARCHAR(15) NOT NULL,
+dtnas DATE NOT NULL,
+idcid INT NOT NULL REFERENCES cidade (idcid)
+);
+
+INSERT INTO autor (nome, rua, numero, bairro, cep, email, fone, dtnas, idcid) VALUES
+
+
+CREATE TABLE editora (
+idedi SERIAL NOT NULL PRIMARY KEY,
+idcid INT NOT NULL REFERENCES cidade (idcid),
+nome VARCHAR(100) NOT NULL,
+email VARCHAR(200) NOT NULL,
+url VARCHAR(255) NOT NULL,
+fone VARCHAR(15) NOT NULL
+);
+
+CREATE TABLE assunto(
+idassunt SERIAL NOT NULL PRIMARY KEY,
+nome VARCHAR(50) NOT NULL,
+fkcategoria INT NOT NULL REFERENCES assunto (idassunt)
+);
+
+CREATE TABLE livro (
+idlivr SERIAL NOT NULL PRIMARY KEY,
+titulo TEXT NOT NULL,
+idedi INT NOT NULL REFERENCES editora (idedi),
+idassunt INT NOT NULL REFERENCES assunto (idassunt),
+precovenda NUMERIC(6,2) NOT NULL
+);
+
+INSERT INTO estado 
+
+
