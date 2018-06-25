@@ -1,0 +1,162 @@
+﻿CREATE TABLE estado (
+idest INT NOT NULL PRIMARY KEY,
+nome VARCHAR(50) NOT NULL,
+sigla CHAR(2) NOT NULL);
+
+INSERT INTO estado (idest, nome, sigla) VALUES
+(1, 'Paraná', 'PR'),
+(2, 'São Paulo', 'SP'),
+(3, 'Acre', 'AC');
+
+
+CREATE TABLE cidade (
+idcid SERIAL NOT NULL PRIMARY KEY,
+nome VARCHAR(80) NOT NULL,
+idest INT NOT NULL REFERENCES estado (idest)
+);
+
+INSERT INTO cidade (nome, idest) VALUES
+('Paranavaí', 1),
+('Santos', 2),
+('Rio Branco', 3);
+
+CREATE TABLE autor (
+idaut SERIAL NOT NULL PRIMARY KEY,
+nome VARCHAR(100) NOT NULL,
+rua VARCHAR(100) NOT NULL,
+numero VARCHAR(6) NOT NULL,
+bairro VARCHAR(50) NOT NULL,
+cep CHAR(8) NOT NULL,
+email VARCHAR(200) NOT NULL,
+fone VARCHAR(15) NOT NULL,
+dtnas DATE NOT NULL,
+idcid INT NOT NULL REFERENCES cidade (idcid)
+);
+
+INSERT INTO autor (nome, rua, numero, bairro, cep, email, fone, dtnas, idcid) VALUES
+('Luan R.', 'R: Moreira', '112', 'Machado', '8438282', 'luan@gmail.com', '1231-1231', '1999-03-09', 1),
+('Marcelo B..', 'R: Signin', '1122', 'Marchin', '8431232', 'March@gmail.com', '1121-8861', '1999-02-07', 2),
+('Laura A..', 'R: Finsd', '22', 'Lorenzete', '878534', 'Laura@gmail.com', '1121-7564', '1999-01-10', 3);
+
+
+CREATE TABLE editora (
+idedi SERIAL NOT NULL PRIMARY KEY,
+idcid INT NOT NULL REFERENCES cidade (idcid),
+nome VARCHAR(100) NOT NULL,
+email VARCHAR(200) NOT NULL,
+url VARCHAR(255) NOT NULL,
+fone VARCHAR(15) NOT NULL
+);
+
+INSERT INTO editora (idcid, nome, email, url, fone) VALUES
+(1, 'Ed. Aphil', 'Aphil@got.com', 'www.aphil.com', '38484-38378'),
+(2, 'Ed. Center', 'center@br.com', 'www.centered.com', '2331-2312'),
+(3, 'Ed. Modern', 'Modern@Ed.com', 'www.modern.com.br', '2242-9785');
+
+
+CREATE TABLE assunto(
+idassunt SERIAL NOT NULL PRIMARY KEY,
+nome VARCHAR(50) NOT NULL,
+fkcategoria INT NOT NULL REFERENCES assunto (idassunt)
+);
+
+--	CREATE TABLE assunto(
+--	idassunt SERIAL NOT NULL PRIMARY KEY,
+--	nome VARCHAR(50) NOT NULL,
+--	fkcategoria INT REFERENCES assunto (idassunt)
+--	);
+
+
+
+
+--- INSERT INTO assunto (nome, fkcategoria) VALUES
+--	('Ciencia da computação', NULL),
+--	('Banco de daods', 1),
+--	('Engenharia de software', 1);
+
+
+
+INSERT INTO assunto () VALUES
+
+CREATE TABLE livro (
+idlivr SERIAL NOT NULL PRIMARY KEY,
+titulo TEXT NOT NULL,
+idedi INT NOT NULL REFERENCES editora (idedi),
+idassunt INT NOT NULL REFERENCES assunto (idassunt),
+precovenda NUMERIC(6,2) NOT NULL
+);
+
+INSERT INTO livro () VALUES
+
+CREATE TABLE publicacao (
+idlivr INT NOT NULL,
+idaut INT NOT NULL,
+PRIMARY KEY (idlivr, idaut),
+FOREIGN KEY (idlivr) REFERENCES livro (idlivr),
+FOREIGN KEY (idaut) REFERENCES autor (idaut)
+);
+
+INSERT INTO publicacao () VALUES
+
+
+--QUESTÃO 1 -- Mostre a relação de preços e títulos dos livros, ordenando alfabeticamente, pelo livro mais
+--	       caro (decrescente).
+
+-- SELECT titulo, precovenda FROM livro ORDER BY precovenda DESC; FORMA 1
+
+-- SELECT titulo, precovenda FROM livro ORDER BY 2 DESC; FORMA 2
+
+--QUESTÃO 2 -- Apresente os livros publicados por uma determinada editora.
+
+-- SELECT livro.titulo, editora.nome
+-- FROM INNER JOIN editora ON editora.idedi=livro.idedi
+-- WHERE editora.nome = 'Saraiva';
+
+--QUESTÃO 3 -- Apresente os livros publicados por uma determinada editora, que custem acima de
+--	       R$100,00.
+
+-- SELECT livro.titulo, editora.nome
+-- FROM INNER JOIN editora ON editora.idedi=livro.idedi
+-- WHERE editora.nome = 'Saraiva' AND livro.precovenda >100;
+
+--QUESTÃO 4 -- Mostre o nome do autor, o nome da cidade e o nome do estado que o mesmo reside. Trate o
+--	       nome apresentado na coluna utilizando apelido.
+
+-- SELECT autor.nome, cidade.nome, estado.nome
+-- FROM autor INNER JOIN cidade ON cidade.idcid = autor.idcid 
+-- 	INNER JOIN estado ON estado.idest = cidade.idest;
+
+-- SELECT autor.nome AS "Nome do autor", cidade.nome "Nome da cidade", estado.nome "Nome do estado"
+-- FROM autor INNER JOIN cidade ON cidade.idcid = autor.idcid 
+-- 	INNER JOIN estado ON estado.idest = cidade.idest;
+
+--QUESTÃO 5 -- Mostre o título do livro e o nome dos autores deste livro. Ordene, primeiramente, pelo título
+--	       do livro e depois pelo nome do autor. Utilize apelidos para as colunas.
+
+-- SELECT livro.titulo, autor.nome
+-- FROM autor INNER JOIN publicacao ON autor.idaut = publicacao.idaut
+-- 	INNER JOIN livro ON livro.idlivr = publicacao.idlivr
+-- ORDER BY livro.titulo, autor.nome;
+
+-- SELECT livro.titulo "Titulo", autor.nome "Autor"
+-- FROM autor INNER JOIN publicacao ON autor.idaut = publicacao.idaut
+-- 	INNER JOIN livro ON livro.idlivr = publicacao.idlivr
+-- ORDER BY livro.titulo, autor.nome;
+
+--QUESTÃO 6 -- Mostre o nome da categoria, o título do livro e o nome dos autores. Ordene os resultados
+--	       pelo nome da categoria, depois pelo título do livro e por fim pelo nome dos autores.
+
+-- SELECT assunto.nome, livro.titulo, autor.nome
+-- FROM assunto INNER JOIN livro 
+-- ON assunto.idassunt = livro.idassunt
+-- INNER JOIN publicacao 
+-- ON livro.idlivr = publicacao.idlivr
+-- INNER JOIN autor
+-- ON autor.idaut = publicacao.idaut
+-- ORDER BY 1, 2, 3;
+
+--QUESTÃO 7 -- Onde temos uma cardinalidade de Muitos para Muitos?
+
+
+
+--QUESTÃO 8 -- O que é tabela associativa e qual é esta tabela?
